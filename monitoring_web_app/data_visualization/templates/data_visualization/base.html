@@ -54,6 +54,11 @@
         <h1> Visualisation des données d'une salle inconnue. </h1>
         {% endif %}
         </center>
+        {% if sensor_id %}
+        <h2> Dispositif : {{ sensor_id }}. </h2>
+        {% else %}
+        <h2> Dispositif inconnu. </h2>
+        {% endif %}
 
         <div class="row">
             <div class="column">
