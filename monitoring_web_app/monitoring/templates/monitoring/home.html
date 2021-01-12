@@ -1,0 +1,16 @@
+{% extends "monitoring/base.html" %}
+{% block content %}
+    {% for room in rooms %}
+    <div class="col">
+        <div class="card border-primary bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header border-primary">{{room.Departement}}</div>
+            <div class="card-body text-dark">
+                <h3><a class="card-title" href="{% url '800a' %}">{{room.roomNumber}}</a></h3>
+            <p class="card-text"> Température: {{room.Temp}}</p>
+            <p class="card-text"> Humidité: {{room.RH}}</p>
+            <p class="card-text"> Pression: {{room.Pression}}</p>
+            </div>
+        </div>
+    </div>    
+    {% endfor %}
+{% endblock content %}
