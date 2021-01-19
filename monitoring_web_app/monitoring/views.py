@@ -44,7 +44,7 @@ def about(request):
 
 
 def salle1(request):
-    return render(request, 'monitoring/800a.html', {'title': 'Salle 800a'})
+    return render(request, 'monitoring/800a.html', {'roomNumber': 'Salle 800A'})
 
 
 # def home(request):
