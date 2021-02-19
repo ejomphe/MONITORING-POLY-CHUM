@@ -4,13 +4,15 @@
     {% for room in rooms %}
     <div class="col">
         <div class="card border-primary bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header border-primary">{{room.Departement}}</div>
+            <div class="card-header border-primary">Département: Maddie's Crib</div>
             <div class="card-body text-dark">
-                <h3><a class="card-title" href="{% url 'test-room-home' %}">{{room.roomNumber}}</a></h3>
-                <!--On devrait nommer le url comme le roomNumber or something pour que ce soit automatisé dans le for loop-->
-                <p class="card-text"> Température: {{room.Temp}}</p>
-                <p class="card-text"> Humidité: {{room.RH}}</p>
-                <p class="card-text"> Pression: {{room.Pression}}</p>
+                <h3><a class="card-title" href="{% url 'test-room-home' room.montage %}">Dispositif:
+                        {{room.montage}}</a>
+                </h3>
+                <p class="card-text"> Température: {{room.temp_c}}</p>
+                <p class="card-text"> Humidité: {{room.hum_rh}}</p>
+                <p class="card-text"> Pression: {{room.pres_kpa}}</p>
+                <p class="card-text"> Dernière maj: {{room.timestamp_sys | date:"j b Y, H:i"}}</p>
             </div>
         </div>
     </div>

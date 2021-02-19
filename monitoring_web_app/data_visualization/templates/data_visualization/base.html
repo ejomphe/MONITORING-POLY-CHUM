@@ -1,86 +1,28 @@
 {% extends "monitoring/base.html" %}
 {% load static %}
+{% load plotly_dash %}
 
 
 {% block content %}
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    .column {
-        float: left;
-        width: 50%;
-        padding: 12px;
-    }
-
-    /* Clearfix (clear floats) */
-    .row::after {
-        content: "";
-        clear: both;
-        display: table;
-    }
-
-
-    .container {
-        height: 300px;
-        width: 90%;
-        position: relative;
-    }
-
-    .center {
-        margin: 0;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-    }
-</style>
-
-
 <center>
-    {% if title %}
-    <h1> Visualisation des données de la salle {{ title }}. </h1>
+    {% if salle %}
+    <h1> Visualisation des données de la salle {{ salle.departement }}. </h1>
     {% else %}
     <h1> Visualisation des données d'une salle inconnue. </h1>
     {% endif %}
 </center>
-{% if sensor_id %}
-<h2> Dispositif : {{ sensor_id }}. </h2>
+{% if dash_context %}
+<h2> Dispositif : {{dash_context.target_id.value}} </h2>
 {% else %}
 <h2> Dispositif inconnu. </h2>
 {% endif %}
 
-<div class="row">
-    <div class="column">
-        <h3>Graphique température : </h3>
-        <img src="{% static 'data_visualization/sample_temperature.png' %}" alt="Temperature" style="width:90%">
-        <!--Mettre codeblock... Avec ID salle on pourra retrieve ses données pour générer les graphiques appropriés.-->
-    </div>
-    <div class="column">
-        <h3>Graphique humidité : </h3>
-        <img src="{% static 'data_visualization/sample_humidity.png' %}" alt="Humidity" style="width:90%">
-        <!--Mettre codeblock-->
-    </div>
+<br>
+
+<div class="{% plotly_class name='graphs' %} card" style="height: 100%; width: 111%">
+    {% plotly_app name='graphs' initial_arguments=dash_context ratio=0.65 %}
 </div>
 
-<div class="row">
-    <div class="column">
-        <h3>Graphique pression : </h3>
-        <img src="{% static 'data_visualization/sample_pressure.png' %}" alt="Pressure" style="width:85%">
-        <!--Mettre codeblock-->
-    </div>
-    <div class="column">
-        <div class="container">
-            <div class="center">
-                <button type="button"
-                    style="height: 50px; width: 320px; font-size: 18px; font-weight: bold; ">Télécharger données au
-                    format csv</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 {% endblock content %}

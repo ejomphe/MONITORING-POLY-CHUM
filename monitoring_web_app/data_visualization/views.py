@@ -1,6 +1,10 @@
 from django.shortcuts import render
+from .models import Salle
 
 
-def test_room(request):
-    # éventuellement le numéro de la salle devra être passé automatiquement... créer une fonction qui va lire dans BD...
-    return render(request, 'data_visualization/base.html', {'title': '800A', 'sensor_id': 'J344a6'})
+def test_room(request, montage_id):
+    context = {
+        'dash_context': {'target_id': {'value': montage_id}},
+        'salle': Salle.objects.filter(boitier__montage__donnee_capteur__montage=montage_id).last()
+    }
+    return render(request, 'data_visualization/base.html', context)
