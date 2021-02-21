@@ -6,13 +6,16 @@
 {% block content %}
 
 <center>
-    {% if salle %}
+    {% if salle == "meteo" %}
+    <h1> Visualisation des données d'Environnement Canada. </h1>
+    {% elif salle.departement %}
     <h1> Visualisation des données de la salle {{ salle.departement }}. </h1>
     {% else %}
     <h1> Visualisation des données d'une salle inconnue. </h1>
     {% endif %}
 </center>
-{% if dash_context %}
+{% if salle == 'meteo' %}
+{% elif dash_context and dash_context.target_id.value != 'meteo' %}
 <h2> Dispositif : {{dash_context.target_id.value}} </h2>
 {% else %}
 <h2> Dispositif inconnu. </h2>

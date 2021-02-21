@@ -1,6 +1,6 @@
 import locale
 from datetime import date, timedelta
-from data_visualization.models import Donnee_capteur
+from data_visualization.models import Donnee_capteur, Climat_exterieur
 
 from django_plotly_dash import DjangoDash
 import dash_core_components as dcc
@@ -25,8 +25,7 @@ app = DjangoDash(
 
 df = pd.DataFrame(list(Donnee_capteur.objects.all().values()))
 
-df = df[(df['temp_c'] <= 40) & (df['temp_c'] >= 0)  # TODO: modifier le filtre selon le flag donnee_aberrante
-        & (df['hum_rh'] <= 100) & (df['hum_rh'] >= 0)]
+df = df[df['donnee_aberrante'] == False]
 df = df.reset_index(drop=True)
 
 # -----------------------------------------------------------------------
@@ -115,8 +114,14 @@ app.layout = html.Div([
 # , switch_state):
 def update_graph_date(montage_id, input_start, input_end, time_period):
 
-    dff = df.copy()
-    dff = dff[dff['montage_id'] == int(montage_id)]
+    if montage_id == "meteo":
+        dff = pd.DataFrame(list(Climat_exterieur.objects.all().values()))
+        dff = dff.rename(columns={'timestamp': 'timestamp_sys'})
+    else:
+        dff = df.copy()
+        dff = dff[dff['montage_id'] == int(montage_id)]
+
+    # TODO: optimiser ceci pour juste utiliser un df... puis voir plus bas pour sélectionner la bonne colonne pour chaque graph.
     dff_temp = dff[(dff['timestamp_sys'] >= input_start)
                    & (dff['timestamp_sys'] <= input_end)]
     dff_hum = dff[(dff['timestamp_sys'] >= input_start)
