@@ -1,10 +1,12 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 
 
-# Admin  # TODO: ajouter un field pour "nom/numéro de salle".
+# Admin
 class Salle(models.Model):
+    nom_salle = models.CharField(max_length=20)
     departement = models.CharField(max_length=30)
     numero_equipement = models.CharField(max_length=10)
     ahu = models.CharField(max_length=10)
@@ -53,14 +55,17 @@ class Climat_exterieur(models.Model):
     hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
     pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
     donnee_aberrante = models.BooleanField()
+    timestamp_sys1 = models.DateTimeField(default=timezone.now)
+    timestamp_sys2 = models.DateTimeField(auto_now=True)
 
 
-# Panne environnement canada
+# Panne environnement canada   # Surement à retirer éventuellement.
 class Erreur_climat_exterieur(models.Model):
     timestamp = models.DateTimeField()
     temp_c = models.DecimalField(max_digits=5, decimal_places=2)
     hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
     pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
+    timestamp_sys = models.DateTimeField(auto_now_add=True)
 
 
 class Donnee_capteur(models.Model):
