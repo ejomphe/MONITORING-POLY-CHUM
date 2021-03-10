@@ -77,11 +77,20 @@ WSGI_APPLICATION = 'monitoring_web_app.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'moniqmrc_monitoring',
+       'HOST': '127.0.0.1',
+       'PORT': '5522',
+       'USER': 'moniqmrc_gbm8970',
+       'PASSWORD': 'GBM8970Projet4!', 
     }
 }
+
+  # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 
 
 # Password validation

@@ -10,39 +10,42 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="{% static 'monitoring/main.css' %}">
-  {% if roomNumber %}
+  <link rel="stylesheet" type="text/css" href="{% static 'monitoring/style.css' %}">
+
+  <!-- {% if roomNumber %}
   <title> {{roomNumber}} </title>
   {% elif title %}
   <title> {{title}} </title>
   {% else %}
   <title> Monitoring App </title>
-  {% endif %}
+  {% endif %} -->
+
+  <title>{% block title %} Monitoring app {% endblock title %}</title>
 
 </head>
 
 <body>
 
-  <nav class="navbar fixed-top navbar-expand-xl navbar-dark bg-primary">
-    <div class="container-md">
+  <nav class="navbar fixed-top navbar-expand-xl">
+    <div class="container-fluid"> 
       <a class="navbar-brand " href="{%  url 'home' %}">
-        <img src="{% static 'images/chum.jpg' %}" width="90" height="40" class="rounded d-inline-block align-top" alt=""
+        <img src="{% static 'images/Chum2.jpg' %}" class="rounded d-inline-block align-top" alt="Logo"
           loading="lazy">
-
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <!--Pour petits écrans, toggler va permettre de mettre les éléments de la navbar dans un dropdown pourquoi transparent/noir?-->
+      <button class="navbar-toggler navbar-dark bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+        aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <ul class="navbar-nav mr-auto mb-3 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active h5" aria-current="page" href="{%  url 'home' %}">Home</a>
-        </li>
-      </ul>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav flex-row flex-wrap">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{%  url 'home' %}">Acceuil</a>
+          </li>
+        </ul>
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle h5" href="#" id="navbarDropdownMenuLink" role="button"
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
               Salles
             </a>
@@ -53,47 +56,55 @@
             </ul>
           </li>
         </ul>
+        <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+          <li class="nav-item">
+            {% for en in enviroCanada %}
+            <a class="nav-link text-dark" href="#climatExt"> 
+              <div class="row">
+                <div class="col-auto">
+                  Extérieur
+                </div>
+                <div class="col-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-sun" viewBox="0 0 16 16">
+                    <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                  </svg>  {{en.temp_c}} °C 
+                </div>
+                <div class="col-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-moisture" viewBox="0 0 16 16">
+                    <path d="M13.5 0a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V7.5h-1.5a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V15h-1.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 .5-.5V.5a.5.5 0 0 0-.5-.5h-2zM7 1.5l.364-.343a.5.5 0 0 0-.728 0l-.002.002-.006.007-.022.023-.08.088a28.458 28.458 0 0 0-1.274 1.517c-.769.983-1.714 2.325-2.385 3.727C2.368 7.564 2 8.682 2 9.733 2 12.614 4.212 15 7 15s5-2.386 5-5.267c0-1.05-.368-2.169-.867-3.212-.671-1.402-1.616-2.744-2.385-3.727a28.458 28.458 0 0 0-1.354-1.605l-.022-.023-.006-.007-.002-.001L7 1.5zm0 0l-.364-.343L7 1.5zm-.016.766L7 2.247l.016.019c.24.274.572.667.944 1.144.611.781 1.32 1.776 1.901 2.827H4.14c.58-1.051 1.29-2.046 1.9-2.827.373-.477.706-.87.945-1.144zM3 9.733c0-.755.244-1.612.638-2.496h6.724c.395.884.638 1.741.638 2.496C11 12.117 9.182 14 7 14s-4-1.883-4-4.267z"/>
+                  </svg>  {{ en.hum_rh }} RH
+                </div>
+                <div class="col-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                    <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2zM3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+                      <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.945 11.945 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0z"/>
+                    </svg>  {{ en.pres_kpa }} kPa
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </li>
+        </ul>
       </div>
-      <div class="navbar-nav">
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <svg class="bi bi-person-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd"
-                    d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                </svg>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">À propos</a></li>
-                <li><a class="dropdown-item" href="#">Admin</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">
-                    <svg class="bi bi-power" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd"
-                        d="M5.578 4.437a5 5 0 1 0 4.922.044l.5-.866a6 6 0 1 1-5.908-.053l.486.875z" />
-                      <path fill-rule="evenodd" d="M7.5 8V1h1v7h-1z" />
-                    </svg>
-                    Log out</a></li>
-              </ul>
-            </li>
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-light" type="submit">Search</button>
-            </form>
-          </ul>
-        </div>
-      </div>
-    </div>
+      <ul class="navbar-nav mr-auto mb-3 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#admin" role="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+              <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </div> 
   </nav>
-  <main role="main" class="container">
-    {% block content %}{% endblock %}
+  
+  <main role="main" class="container-xxl my-md-4 bd-layout">
+    <div class="row">
+      {% block content %}{% endblock content %}
+    </div>
   </main>
+
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
     crossorigin="anonymous"></script>
