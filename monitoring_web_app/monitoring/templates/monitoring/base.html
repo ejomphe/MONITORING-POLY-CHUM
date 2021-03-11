@@ -22,6 +22,8 @@
 
   <title>{% block title %} Monitoring app {% endblock title %}</title>
 
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 </head>
 
 <body>
@@ -50,7 +52,6 @@
               Salles
             </a>
             <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="{% url 'test-room-home' %}">800A</a></li>
               <li><a class="dropdown-item" href="#">800B</a></li>
               <li><a class="dropdown-item" href="#">800C</a></li>
             </ul>

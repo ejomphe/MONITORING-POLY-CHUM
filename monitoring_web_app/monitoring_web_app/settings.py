@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'channels_redis',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'data_visualization.apps.DataVisualizationConfig',
     'monitoring.apps.MonitoringConfig',
     'django.contrib.admin',
@@ -76,14 +79,36 @@ WSGI_APPLICATION = 'monitoring_web_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'maddnobh_datatest',  # 'NAME': 'maddnobh_projet4',
+#         'HOST': '127.0.0.1',
+#         # need to use SSH tunnel to connect remotely to the database on namecheap. The destination of the tunnel is 127.0.0.1:3306
+#         'PORT': '5522',
+#         'USER': 'maddnobh_gbm8970',
+#         'PASSWORD': 'GBM8970Projet4!',
+
+#     }
+# }
+
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'moniqmrc_monitoring',
-       'HOST': '127.0.0.1',
-       'PORT': '5522',
-       'USER': 'moniqmrc_gbm8970',
-       'PASSWORD': 'GBM8970Projet4!', 
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'moniqmrc_monitoring',  # 'NAME': 'maddnobh_projet4',
+        'HOST': '127.0.0.1',
+        # need to use SSH tunnel to connect remotely to the database on namecheap. The destination of the tunnel is 127.0.0.1:3306
+        'PORT': '5522',
+        'USER': 'moniqmrc_gbm8970',
+        'PASSWORD': 'GBM8970Projet4!',
+
     }
 }
 
@@ -117,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -133,5 +158,37 @@ MEDIA_URL = '/images/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    # Pas certain qu'il soit nécessaire car c'est dans BASE_DIR/static/images...
     BASE_DIR / "images",
 ]
+
+ASGI_APPLICATION = 'monitoring_web_app.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379), ],
+        }
+    }
+
+}
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    'django_plotly_dash.finders.DashAssetFinder',
+    'django_plotly_dash.finders.DashComponentFinder',
+    'django_plotly_dash.finders.DashAppDirectoryFinder',
+]
+
+PLOTLY_COMPONENTS = [
+    'dash_core_components',
+    'dash_html_components',
+    'dash_renderer',
+
+    'dpd_components',
+]
+
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
