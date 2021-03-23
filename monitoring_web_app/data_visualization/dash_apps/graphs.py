@@ -53,7 +53,7 @@ app.layout = html.Div([
     html.Div([html.H2("Choix du pas de temps :"),
               dcc.RadioItems(id='pas-temps',
                              options=[
-                                 {'label': '15 min (défault)', 'value': 'def'},
+                                 {'label': '5 min (défault)', 'value': 'def'},
                                  {'label': '1h', 'value': 'hour'},
                                  {'label': '24h', 'value': 'day'}
                              ],
@@ -102,8 +102,8 @@ app.layout = html.Div([
               html.Br(),
               html.Div([html.Div(id='output-daily-readings'), html.Div(id='output-daily-errors')], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '10vw', 'margin-top': '4vw'})]),
 
-    html.Button('Extraire données au format CSV',
-                id='save-as-csv', n_clicks=0),
+    html.Div([html.Button('Extraire données au format CSV',
+                          id='save-as-csv', n_clicks=0)], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '10vw', 'margin-top': '2vw'}),
 
 
 ])

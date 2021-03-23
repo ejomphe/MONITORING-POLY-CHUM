@@ -5,25 +5,28 @@
 {% block content %}
 
 
-{% for departement in departements %}
-    <h1>{{departement}}</h1>
-    <div class="row row-cols-1 row-cols-md-3">
-        {% for donnee in liste %}
-            {% if donnee.1.departement == departement %}
-                    <div class="col">
-                        <div class="card border-primary bg-light mb-3 mt-5 mx-auto" style="max-width: 18rem;">
-                            <a class="card-header card-title text-decoration-none border-primary" href="{% url 'test-room-home' %}"><h4>{{donnee.1.departement}}</h4></a>
-                            <a class="card-body text-dark text-decoration-none" href="{% url 'test-room-home' %}">
-                                <p class="card-text"> Montage: {{donnee.0.montage}}</p>
-                                <p class="card-text"> Température: {{donnee.0.temp_c}} °C</p>
-                                <p class="card-text"> Humidité: {{donnee.0.hum_rh}} RH</p>
-                                <p class="card-text"> Pression: {{donnee.0.pres_kpa}} kPa</p>
-                                <small class="card-text">{{donnee.0.timestamp_sys | date:"j b Y, H:i:s"}}</small>
-                            </a>
-                        </div>
-                    </div>
-            {% endif %}
-        {% endfor %}
+{% for dep in departements %}
+<h1>{{dep}}</h1>
+<div class="row row-cols-1 row-cols-md-3">
+    {% for donnee, salle in liste %}
+    {% if salle.departement == dep %}
+    <div class="col">
+        <div class="card border-primary bg-light mb-3 mt-5 mx-auto" style="max-width: 18rem;">
+            <a class="card-header card-title text-decoration-none border-primary"
+                href="{% url 'data-visualization' donnee.montage.id %}">
+                <h4>{{salle.nom_salle}}</h4>
+            </a>
+            <a class="card-body text-dark text-decoration-none" href="{% url 'data-visualization' donnee.montage.id %}">
+                <p class="card-text"> Montage: {{donnee.montage.id}}</p>
+                <p class="card-text"> Température: {{donnee.temp_c}} °C</p>
+                <p class="card-text"> Humidité: {{donnee.hum_rh}} RH</p>
+                <p class="card-text"> Pression: {{donnee.pres_kpa}} kPa</p>
+                <small class="card-text">{{donnee.timestamp_sys | date:"j b Y, H:i:s"}}</small>
+            </a>
+        </div>
     </div>
+    {% endif %}
+    {% endfor %}
+</div>
 {% endfor %}
 {% endblock content %}

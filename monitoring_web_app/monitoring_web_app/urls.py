@@ -20,9 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('monitoring.urls')),
-    path('test-room/', include('data_visualization.urls')),
+    path('visualisation-donnees/', include('data_visualization.urls')),
     # pas certain que ça va aller ici...
     path('django_plotly_dash/', include('django_plotly_dash.urls')),
 
-] 
-
+]

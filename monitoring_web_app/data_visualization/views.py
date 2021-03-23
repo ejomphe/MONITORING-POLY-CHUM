@@ -2,13 +2,13 @@ from django.shortcuts import render
 from .models import Salle
 
 
-def test_room(request, montage_id):
+def data_visualization(request, montage_id):
 
     if montage_id == "meteo":
         salle = "meteo"
     else:
         salle = Salle.objects.filter(
-            boitier__montage__donnee_capteur__montage=montage_id).last()
+            boitier__montage__pk=montage_id)[0]
 
     context = {
         'dash_context': {'target_id': {'value': montage_id}},

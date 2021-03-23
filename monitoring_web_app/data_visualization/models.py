@@ -17,6 +17,10 @@ class Salle(models.Model):
     seuil_press_min_kpa = models.DecimalField(max_digits=5, decimal_places=2)
     seuil_press_max_kpa = models.DecimalField(max_digits=5, decimal_places=2)
 
+    def __str__(self):
+        return "Salle " + str(self.pk)
+
+
 class Boitier(models.Model):                               # Admin
     salle = models.ForeignKey(Salle, on_delete=models.CASCADE)
     # On parle ici de la description du l'endroit ou on a placé le boitier ex. coin nord-ouest
@@ -27,8 +31,12 @@ class Boitier(models.Model):                               # Admin
     numero_imprimante_fabrication = models.CharField(max_length=20)
     nom_fichier_cad = models.CharField(max_length=50)
 
+    def __str__(self):
+        return "Boitier " + str(self.pk)
 
 # Admin   (note un montage = capteur + micro)
+
+
 class Montage(models.Model):
     boitier = models.ForeignKey(Boitier, on_delete=models.CASCADE)
     modele_capteur = models.CharField(max_length=10)
@@ -44,7 +52,7 @@ class Montage(models.Model):
     actif = models.BooleanField()
 
     def __str__(self):
-        return str(self.pk)
+        return "Montage " + str(self.pk)
 
 
 # environnement canada (web crawler)
