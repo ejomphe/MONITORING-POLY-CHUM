@@ -23,5 +23,6 @@ urlpatterns = [
     path('visualisation-donnees/', include('data_visualization.urls')),
     # pas certain que ça va aller ici...
     path('django_plotly_dash/', include('django_plotly_dash.urls')),
+    path('alert', include('alert.urls')),
 
 ]

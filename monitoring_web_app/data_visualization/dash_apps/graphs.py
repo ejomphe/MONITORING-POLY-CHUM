@@ -13,7 +13,7 @@ import os
 import time
 
 # permet de visualiser date en francais sur mon ordi.
-locale.setlocale(locale.LC_ALL, '')
+#locale.setlocale(locale.LC_ALL, '')
 
 desktop_path = os.path.join(os.environ["HOMEPATH"], "Desktop")
 
@@ -28,24 +28,16 @@ app = DjangoDash(
     'graphs', external_stylesheets=external_stylesheets, id='target_id')
 
 # -----------------------------------------------------------------------
-# DATA
-
-# df = pd.DataFrame(list(Donnee_capteur.objects.all().values()))
-
-# df = df[df['donnee_aberrante'] == False]
-# df = df.reset_index(drop=True)
-
-# -----------------------------------------------------------------------
 # App layout
 app.layout = html.Div([
     dcc.Input(id='target_id', type='hidden', value='filler text'),
-    html.H2("Choisir un intervale de dates d'analyse :"),
+    html.H2("Choisir un intervalle de dates d'analyse :"),
     html.Div([dcc.DatePickerRange(
         id='date-selected',
-        start_date=today - week,  # (2019, 1, 20),
+        start_date=today - week,
         # vérifier si quand plus d'une journée d'acquisition si c'est ok sans le +1 jour pour end_date.
-        end_date=today + timedelta(1),    # (2019, 9, 25),
-        # max_date_allowed=date.today() + timedelta(1),  # can't read the future.
+        end_date=today + timedelta(1),
+        max_date_allowed=today + timedelta(2),  # can't read the future.
         min_date_allowed=date(2021, 1, 1),
     )]),
 
@@ -61,33 +53,6 @@ app.layout = html.Div([
                              style={'display': 'inline-block', 'vertical-align': 'top',
                                     'margin-left': '0.5vw', }
                              ),
-
-
-              #           # Ajout de seuils
-              #           html.Div([
-              #               daq.BooleanSwitch(
-              #                   id='my-boolean-switch',
-              #                   on=False,
-              #                   color="#98FB98",
-              #                   label="+ seuils",
-              #                   labelPosition="top",
-              #               )], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '18vw', }
-              # ),
-
-              #           dcc.Input(
-              #     id="new-seuil-temp", type="number",
-              #     debounce=True, placeholder="Seuil température",
-              #     style={'display': 'inline-block', 'vertical-align': 'top',
-              #            'margin-left': '3vw', 'margin-top': '1.7vw', 'visibility': 'visible'},
-              # ),
-
-              #     dcc.Input(
-              #     id="new-seuil-hum", type="number",
-              #     debounce=True, placeholder="Seuil humidité",
-              #     style={'display': 'inline-block', 'vertical-align': 'top',
-              #            'margin-left': '3vw', 'margin-top': '1.7vw', 'visibility': 'visible'}
-              # ),
-
               ]),
 
     html.Br(),
@@ -110,77 +75,75 @@ app.layout = html.Div([
 
 
 @ app.callback(
-    [  # 1er output important
-        Output(component_id='temp-graph', component_property='figure'),
-        # 2e output important
+    [Output(component_id='temp-graph', component_property='figure'),
         Output(component_id='hum-graph', component_property='figure'),
         Output(component_id='pres-graph', component_property='figure'),
         Output(component_id='output-daily-readings',
                component_property='children'),
         Output(component_id='output-daily-errors',
                component_property='children'),
-        # Output(component_id='new-seuil-temp', component_property='style'),
-        # Output(component_id='new-seuil-hum', component_property='style')
-    ],
+     ],
     [Input(component_id='target_id', component_property='value'),
      Input(component_id='date-selected', component_property='start_date'),
      Input(component_id='date-selected', component_property='end_date'),
      Input(component_id='pas-temps', component_property='value'),
      Input(component_id='save-as-csv', component_property='n_clicks'),
-     # Input(component_id='my-boolean-switch', component_property='on')
      ])
-# , switch_state):
 def update_graph_date(montage_id, input_start, input_end, time_period, n_clicks):
 
-    if montage_id == "meteo":
-        dff = pd.DataFrame(list(Climat_exterieur.objects.all().values()))
-        dff = dff.rename(columns={'timestamp': 'timestamp_sys'})
+    if montage_id == "meteo":  # Ajouter filtre timestamp entre start et end... va permettre de visualiser dans graph les abberrants
+        df = pd.DataFrame(list(Climat_exterieur.objects.filter(
+            timestamp__gte=input_start, timestamp__lte=input_end).values()))
+        df = df.rename(columns={'timestamp': 'real_time_clock'})
+        # on fait les graphiques avec dff, mais df est utile pour le nb de données quotidiennes et abb. Note on affiche graphiquement les données abb pour météo.
+        dff = df.copy()
+
+    # Donnee moyennée et non aberrante. Car panne peut être non moyenné et non aberrant.
     else:
         df = pd.DataFrame(list(Donnee_capteur.objects.filter(
-            montage=(int(montage_id)), donnee_aberrante=False).values()))
+            montage__pk=(int(montage_id)), real_time_clock__gte=input_start, real_time_clock__lte=input_end).values()))
         dff = df.copy()
-        #dff = dff[dff['montage_id'] == int(montage_id)]
+        # pour les graphiques on ne veut pas les aberrantes. Or c'est utile de les conserver pour le comptage du nb de données aberrantes.
+        dff = dff[dff['donnee_aberrante'] == False]
 
-        salle = Salle.objects.filter(
-            boitier__montage__donnee_capteur__montage=montage_id).last()
-
-    dff = dff[(dff['timestamp_sys'] >= input_start)
-              & (dff['timestamp_sys'] <= input_end)]
+        salle = Salle.objects.get(
+            boitier__montage__pk=montage_id)
 
 # modification du dataset pour le pas de temps sélectionné
 
+# TODO: voir si on peut conserver heure originale dans resample.
     if time_period == 'hour':
-        dff = (dff.set_index('timestamp_sys')
+        dff = (dff.set_index('real_time_clock')
                .resample('H').first()
                .reset_index()
                .reindex(columns=dff.columns))
 
     elif time_period == 'day':
-        dff = (dff.set_index('timestamp_sys')
+        dff = (dff.set_index('real_time_clock')
                .resample('D').first()
                .reset_index()
                .reindex(columns=dff.columns))
 
 ##########################################################
 
-    fig_temp = px.scatter(dff, x="timestamp_sys",
+    fig_temp = px.scatter(dff, x="real_time_clock",
                           y="temp_c", title='Graphique Température', labels={
-                              'timestamp_sys': 'Date d\'acquistion',
+                              'real_time_clock': 'Date d\'acquistion',
                               'temp_c': 'Température (' + u'\u00B0' + 'C)'
                           },
                           color_discrete_sequence=px.colors.qualitative.Vivid,)  # title="")
 
     # fig_temp.update(layout=dict(title=dict(x=0.5))) # pour centrer le titre.
 
-    fig_hum = px.scatter(dff, x="timestamp_sys",
+    fig_hum = px.scatter(dff, x="real_time_clock",
                          y="hum_rh", title='Graphique Humidité', labels={
-                             'timestamp_sys': 'Date d\'acquistion',
+                             'real_time_clock': 'Date d\'acquistion',
                              'hum_rh': 'Humidité relative (%)'
                          }, color_discrete_sequence=["rgb(82,188,163)"])    # Ou par nom de couleur: color_discrete_sequence=["magenta"]
 
-    fig_pres = px.scatter(dff, x="timestamp_sys",
+    fig_pres = px.scatter(dff, x="real_time_clock",
                           y="pres_kpa", title='Graphique Pression', labels={
-                              'timestamp_sys': 'Date d\'acquistion',
+                              'real_time_clock': 'Date d\'acquistion',
                               'pres_kpa': 'Pression (kpa)'
                           }, color_discrete_sequence=["rgb(8,10,120)"])
 
@@ -199,10 +162,12 @@ def update_graph_date(montage_id, input_start, input_end, time_period, n_clicks)
         fig_pres.add_hline(y=salle.seuil_press_max_kpa,
                            line_dash="dot", line_color="red")
 
+# TODO: voir si on veut plutôt donner nb lectures totales et abb dans intervalle input_start-input_end ou ajd seulement...
     nb_lectures = len(
-        dff[(dff['timestamp_sys'] >= today.strftime('%Y-%m-%d'))])
-    nb_lectures_abb = len(dff[(dff['timestamp_sys'] >= today.strftime('%Y-%m-%d')) & (
-        dff['donnee_aberrante'] == True)])
+        df[(df['real_time_clock'] >= today.strftime('%Y-%m-%d'))])
+    nb_lectures_abb = len(df[(df['real_time_clock'] >= today.strftime('%Y-%m-%d')) & (
+        df['donnee_aberrante'] == True)])
+
     str1 = "Nombre de lectures quotidiennes : " + '{}'.format(nb_lectures)
     str2 = "Nombre de lectures aberrantes : " + '{}'.format(nb_lectures_abb)
 
@@ -220,24 +185,4 @@ def update_graph_date(montage_id, input_start, input_end, time_period, n_clicks)
 
         dff.to_csv(desktop_path + filename, index=False)
 
-    # ------------------------ toggle of the threshold inputs
-
-    # if switch_state:
-    #     return container, fig_temp, fig_hum, {'display': 'inline-block', 'vertical-align': 'top',
-    #                                           'margin-left': '3vw', 'margin-top': '1.7vw', 'visibility': 'visible'}, {'display': 'inline-block', 'vertical-align': 'top',
-    #                                                                                                                   'margin-left': '3vw', 'margin-top': '1.7vw', 'visibility': 'visible'}
-    # else:
-    #     return container, fig_temp, fig_hum, {'display': 'inline-block', 'vertical-align': 'top',
-    #                                           'margin-left': '3vw', 'margin-top': '1.7vw', 'visibility': 'hidden'}, {'display': 'inline-block', 'vertical-align': 'top',
-    #                                                                                                                  'margin-left': '3vw', 'margin-top': '1.7vw', 'visibility': 'hidden'}
-
     return fig_temp, fig_hum, fig_pres, str1, str2
-
-
-"""
-TODO:
-1-Ajouter radio items pour sélectionner le pas de temps (ici par défaut =15min mais normalement sera notre période éch aka 5 minutes).
-2-voir .state pour bouton, et 2 callbacks un à la suite de l'autre... et pause dans CB...
-3-Ajouter un boolean toggle pour activer l'ajout de seuil, ensuite il y aurait input box pour mettre la température voulue...??
-4-Bouton avec state... pour download to csv... Voir comment récupérer le df courant... return du premier callback??
-"""

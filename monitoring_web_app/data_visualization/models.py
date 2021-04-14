@@ -1,108 +1,169 @@
 from django.db import models
 from django.utils import timezone
+import datetime
 
 # Create your models here.
 
 
 # Admin
 class Salle(models.Model):
-    nom_salle = models.CharField(max_length=20)
-    departement = models.CharField(max_length=30)
-    numero_equipement = models.CharField(max_length=10)
-    ahu = models.CharField(max_length=10)
-    seuil_temp_min_c = models.DecimalField(max_digits=5, decimal_places=2)
-    seuil_temp_max_c = models.DecimalField(max_digits=5, decimal_places=2)
-    seuil_hum_min_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    seuil_hum_max_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    seuil_press_min_kpa = models.DecimalField(max_digits=5, decimal_places=2)
-    seuil_press_max_kpa = models.DecimalField(max_digits=5, decimal_places=2)
+    nom_salle = models.CharField(max_length=20, verbose_name="Nom de salle")
+    departement = models.CharField(max_length=30, verbose_name="Département")
+    numero_equipement = models.CharField(
+        max_length=10, blank=True, verbose_name="Numéro d'équipement")
+    ahu = models.CharField(max_length=10, blank=True,
+                           verbose_name="Air handling unit")
+    seuil_temp_min_c = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Seuil température minimale", help_text="Ces seuils serviront à l'envoie d'alertes et seront affichés dans les graphiques de visualisation de données")
+    seuil_temp_max_c = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Seuil température maximale")
+    seuil_hum_min_rh = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Seuil humidité minimale")
+    seuil_hum_max_rh = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Seuil humidité maximale")
+    seuil_press_min_kpa = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Seuil pression minimale")
+    seuil_press_max_kpa = models.DecimalField(
+        max_digits=5, decimal_places=2, verbose_name="Seuil pression maximale")
 
     def __str__(self):
-        return "Salle " + str(self.pk)
+        return self.nom_salle
+
+
+"""
+Optimisation BD
+
+# class Parametre_environnement(models.Models):
+# 	parametre = models.CharField(max_length=30)
+
+
+# class Parametre_calibration(models.Models):
+# 	parametre = models.CharField(max_length=30)
+
+
+# class Min_max(models.Models):
+# 	parametre = models.CharField(max_length=30)
+
+
+# class Salle_seuil(models.Models):
+# 	salle = models.ForeignKey(Salle, on_delete=models.CASCADE)
+#     parameter_environnement = models.ForeignKey(Parametre_environnement, on_delete=models.CASCADE)
+# 	min_max= models.ForeignKey(Min_max, on_delete=models.CASCADE)
+# 	valeur= models.DecimalField(max_digits=5, decimal_places=2)
+
+# class Montage_calibration(models.Models):
+# 	montage = models.ForeignKey(montage, on_delete=models.CASCADE)
+#     parameter_environnement = models.ForeignKey(Parametre_environnement, on_delete=models.CASCADE)
+# 	parameter_calibration= models.ForeignKey(Parametre_calibration, on_delete=models.CASCADE)
+# 	valeur= models.DecimalField(max_digits=5, decimal_places=3)
+
+"""
 
 
 class Boitier(models.Model):                               # Admin
+    nom_boitier = models.CharField(
+        max_length=20, verbose_name="Nom du boîtier", default="")
     salle = models.ForeignKey(Salle, on_delete=models.CASCADE)
     # On parle ici de la description du l'endroit ou on a placé le boitier ex. coin nord-ouest
-    emplacement = models.CharField(max_length=30)
-    ahu = models.CharField(max_length=10)
-    date_fabrication = models.DateField()
-    materiel = models.CharField(max_length=20)
-    numero_imprimante_fabrication = models.CharField(max_length=20)
-    nom_fichier_cad = models.CharField(max_length=50)
+    emplacement = models.CharField(max_length=30, blank=True, )
+    date_fabrication = models.DateField(
+        blank=True, verbose_name="Date de fabrication")
+    materiel = models.CharField(
+        max_length=20, blank=True, verbose_name="Matériel")
+    numero_imprimante_fabrication = models.CharField(
+        max_length=20, blank=True, verbose_name="Numéro d'imprimante de fabrication")
+    nom_fichier_cad = models.CharField(
+        max_length=50, blank=True, verbose_name="Nom du fichier CAD")
+# TODO ajouter un champ nom/numero boitier et utiliser ça dans __str__
 
     def __str__(self):
-        return "Boitier " + str(self.pk)
+        return str(self.pk)
 
 # Admin   (note un montage = capteur + micro)
 
 
 class Montage(models.Model):
+    nom_montage = models.CharField(
+        max_length=20, verbose_name="Nom du montage", default="")
     boitier = models.ForeignKey(Boitier, on_delete=models.CASCADE)
-    modele_capteur = models.CharField(max_length=10)
-    modele_microcontroleur = models.CharField(max_length=10)
-    offset_temp = models.DecimalField(max_digits=5, decimal_places=3)
-    ord_orig_temp = models.DecimalField(max_digits=5, decimal_places=3)
-    offset_hum = models.DecimalField(max_digits=5, decimal_places=3)
-    ord_orig_hum = models.DecimalField(max_digits=5, decimal_places=3)
-    offset_pres = models.DecimalField(max_digits=5, decimal_places=3)
-    ord_orig_pres = models.DecimalField(max_digits=5, decimal_places=3)
-    date_derniere_calibration = models.DateField()
-    date_prochaine_calibration = models.DateField()
-    actif = models.BooleanField()
+    modele_capteur = models.CharField(
+        max_length=10, blank=True, verbose_name="Modèle capteur")
+    modele_microcontroleur = models.CharField(
+        max_length=10, blank=True, verbose_name="Modèle microcontrôleur")
+    offset_temp = models.DecimalField(
+        max_digits=5, decimal_places=3, verbose_name="Offset température", help_text="Les champs \"Offset\" et \"Ordonnée à l'origine\" sont obtenus lors de l'étalonnage")
+    ord_orig_temp = models.DecimalField(
+        max_digits=5, decimal_places=3, verbose_name="Ordonnee à l'origine température")
+    offset_hum = models.DecimalField(
+        max_digits=5, decimal_places=3, verbose_name="Offset humidité")
+    ord_orig_hum = models.DecimalField(
+        max_digits=5, decimal_places=3, verbose_name="Ordonnee à l'origine humidité")
+    offset_pres = models.DecimalField(
+        max_digits=5, decimal_places=3, verbose_name="Offset pression")
+    ord_orig_pres = models.DecimalField(
+        max_digits=5, decimal_places=3, verbose_name="Ordonnee à l'origine pression")
+    date_derniere_calibration = models.DateField(
+        blank=True, verbose_name="Date de la dernière calibration")
+    date_prochaine_calibration = models.DateField(
+        blank=True, verbose_name="Date de la prochaine calibration")
+    responsable = models.ManyToManyField('alert.Responsable')
+    actif = models.BooleanField(
+        help_text="Cette option doit être sélectionnée pour afficher les données de ce montage sur le site")
+
+# TODO ajouter un champ nom/numero montage et utiliser ça dans __str__
 
     def __str__(self):
-        return "Montage " + str(self.pk)
+        return str(self.pk)
 
 
 # environnement canada (web crawler)
 class Climat_exterieur(models.Model):
     timestamp = models.DateTimeField()
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
-    donnee_aberrante = models.BooleanField()
+    temp_c = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    donnee_aberrante = models.BooleanField(null=True)
+    # retire et va overwrite quand abb
     timestamp_sys1 = models.DateTimeField(default=timezone.now)
-    timestamp_sys2 = models.DateTimeField(auto_now=True)
-
-
-# Panne environnement canada   # Surement à retirer éventuellement.
-class Erreur_climat_exterieur(models.Model):
-    timestamp = models.DateTimeField()
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
-    timestamp_sys = models.DateTimeField(auto_now_add=True)
 
 
 class Donnee_capteur(models.Model):
     montage = models.ForeignKey(Montage, on_delete=models.CASCADE)
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
+    temp_c = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     donnee_aberrante = models.BooleanField()
     donnee_de_panne = models.BooleanField()
+    donnee_moyennee = models.BooleanField()
     # retire éventuellement quand RTC fonctionne.
     timestamp_sys = models.DateTimeField(auto_now_add=True)
-    real_time_clock = models.DateTimeField()
+    real_time_clock = models.DateTimeField(null=True)
+
+    def delta_mc_bd(self):
+        return (self.timestamp_sys - self.real_time_clock)
+
+    def delta_bd_app(self):
+        return (timezone.now() - self.timestamp_sys)
+
+# Retirer toute cette table
 
 
 class Donnee_aberrante_capteur(models.Model):
     montage = models.ForeignKey(Montage, on_delete=models.CASCADE)
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
+    temp_c = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     # retire éventuellement quand RTC fonctionne.
     timestamp_sys = models.DateTimeField(auto_now_add=True)
-    real_time_clock = models.DateTimeField()
+    real_time_clock = models.DateTimeField(null=True)
 
 
-# quand envoie lecture carte SD.
+# Retire toute cette table
 class Panne_de_service(models.Model):
     montage = models.ForeignKey(Montage, on_delete=models.CASCADE)
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2)
+    temp_c = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     # retire éventuellement quand RTC fonctionne.
     timestamp_sys = models.DateTimeField(auto_now_add=True)
-    real_time_clock = models.DateTimeField()
+    real_time_clock = models.DateTimeField(null=True)

@@ -1,6 +1,8 @@
 {% extends "monitoring/base.html" %}
 
-{% block title %} Département X {% endblock title %}
+{% load i18n %}
+
+{% block title %} Monitoring {% endblock title %}
 
 {% block content %}
 
@@ -21,7 +23,10 @@
                 <p class="card-text"> Température: {{donnee.temp_c}} °C</p>
                 <p class="card-text"> Humidité: {{donnee.hum_rh}} RH</p>
                 <p class="card-text"> Pression: {{donnee.pres_kpa}} kPa</p>
-                <small class="card-text">{{donnee.timestamp_sys | date:"j b Y, H:i:s"}}</small>
+                <p class="card-text"> delta mc-bd: {{donnee.delta_mc_bd}}</p>
+                {% language 'fr' %}
+                <small class="card-text">{{donnee.real_time_clock | date:"j F Y, H:i:s"}}</small>
+                {% endlanguage %}
             </a>
         </div>
     </div>

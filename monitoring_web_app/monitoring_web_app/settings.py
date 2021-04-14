@@ -26,7 +26,7 @@ SECRET_KEY = 'ir+hp$19v$k@@0$aoib)twupf8q951eev2)9@gn1##ivke9j^!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'data_visualization.apps.DataVisualizationConfig',
     'monitoring.apps.MonitoringConfig',
+    'alert.apps.AlertConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,19 +87,6 @@ WSGI_APPLICATION = 'monitoring_web_app.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'maddnobh_datatest',  # 'NAME': 'maddnobh_projet4',
-#         'HOST': '127.0.0.1',
-#         # need to use SSH tunnel to connect remotely to the database on namecheap. The destination of the tunnel is 127.0.0.1:3306
-#         'PORT': '5522',
-#         'USER': 'maddnobh_gbm8970',
-#         'PASSWORD': 'GBM8970Projet4!',
-
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -108,6 +96,9 @@ DATABASES = {
         'PORT': '5522',
         'USER': 'moniqmrc_gbm8970',
         'PASSWORD': 'GBM8970Projet4!',
+        # 'OPTIONS': {
+
+        #     'init_command': 'SET storage_engine=INNODB; ALTER DATABASE moniqmrc_migration CHARACTER SET utf8 COLLATE utf8_unicode_ci', }
 
     }
 }

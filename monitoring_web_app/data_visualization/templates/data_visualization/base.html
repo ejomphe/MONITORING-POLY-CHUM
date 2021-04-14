@@ -3,6 +3,18 @@
 {% load plotly_dash %}
 
 
+{% block title %}
+
+{% if salle == "meteo" %}
+Environnement extérieur
+{% elif salle.departement %}
+Salle {{ salle.nom_salle }}
+{% else %}
+Salle inconnue
+{% endif %}
+
+{% endblock title %}
+
 {% block content %}
 
 <center>
