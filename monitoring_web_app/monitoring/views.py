@@ -7,16 +7,16 @@ def listeDepartement(departements):
 
     departementsUnique = []
     departementsUnique = list(dict.fromkeys(departements))
-
+            
     return departementsUnique
 
 
 def home(request):
-
+    
     MontageActif = (Montage.objects.filter(actif=True))
-    donnees = []
     salles = []
     departements = []
+    donnees = []
     for x in MontageActif:
         derniere_donnee = Donnee_capteur.objects.filter(
             montage=x.id, donnee_aberrante=False).last()
@@ -36,13 +36,14 @@ def home(request):
                 boitier__montage__pk=x.id).departement)
 
     liste = list(zip(donnees, salles))
-    context = {
-        # 'donnees': donnees,
-        # 'salles': salles,
-        'departements': listeDepartement(departements),
-        'liste': liste,
+
+    context = { 
+        'salle_navbar':salles, 
+        'departements':listeDepartement(departements), 
+        'liste':liste,
         'enviroCanada': [Climat_exterieur.objects.last()]
-    }
+        }
+    
 
     return render(request, 'monitoring/home.html', context)
 
