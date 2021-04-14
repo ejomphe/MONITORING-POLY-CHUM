@@ -5,6 +5,7 @@ from data_visualization.models import Montage
 from data_visualization.models import Donnee_capteur
 from data_visualization.models import Boitier
 
+
 def data_visualization(request, montage_id):
 
     if montage_id == "meteo":
@@ -17,9 +18,10 @@ def data_visualization(request, montage_id):
     salle_navbar = []
     donnees_navbar = []
 
-    for x in MontageActif:  
-        donnees_navbar.append(Donnee_capteur.objects.filter(montage = x.id).last())      
-        salle_navbar.append(Salle.objects.filter(boitier__montage = x.id)[0])
+    for x in MontageActif:
+        donnees_navbar.append(
+            Donnee_capteur.objects.filter(montage=x.id).last())
+        salle_navbar.append(Salle.objects.get(boitier__montage=x.id))
 
     liste = list(zip(donnees_navbar, salle_navbar))
 
@@ -27,9 +29,10 @@ def data_visualization(request, montage_id):
         'dash_context': {'target_id': {'value': montage_id}},
         'salle': salle,
         'liste': liste,
-        'enviroCanada':[Climat_exterieur.objects.last()]
+        'enviroCanada': [Climat_exterieur.objects.last()]
     }
     return render(request, 'data_visualization/base.html', context)
+
 
 def info(request, montage_id):
 
@@ -37,18 +40,19 @@ def info(request, montage_id):
     salle_navbar = []
     donnees_navbar = []
 
-    for x in MontageActif:  
-        donnees_navbar.append(Donnee_capteur.objects.filter(montage = x.id).last())      
-        salle_navbar.append(Salle.objects.filter(boitier__montage = x.id)[0])
+    for x in MontageActif:
+        donnees_navbar.append(
+            Donnee_capteur.objects.filter(montage=x.id).last())
+        salle_navbar.append(Salle.objects.get(boitier__montage=x.id))
 
     liste = list(zip(donnees_navbar, salle_navbar))
 
     context = {
         'montage_id': montage_id,
-        'boitier': Boitier.objects.filter(montage = montage_id)[0],
-        'salle': Salle.objects.filter(boitier__montage = montage_id)[0],
-        'montage': Montage.objects.filter(id = montage_id)[0],
+        'boitier': Boitier.objects.get(montage=montage_id),
+        'salle': Salle.objects.get(boitier__montage=montage_id),
+        'montage': Montage.objects.get(id=montage_id),
         'liste': liste,
-        'enviroCanada':[Climat_exterieur.objects.last()]
+        'enviroCanada': [Climat_exterieur.objects.last()]
     }
     return render(request, 'data_visualization/info.html', context)

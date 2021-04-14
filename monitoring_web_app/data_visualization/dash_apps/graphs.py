@@ -31,7 +31,8 @@ app = DjangoDash(
 # App layout
 app.layout = html.Div([
     dcc.Input(id='target_id', type='hidden', value='filler text'),
-    html.H2("Choisir un intervalle de dates d'analyse :"),
+    html.H2("Choisir un intervalle de dates d'analyse :",
+            style={'fontSize': 24}),
     html.Div([dcc.DatePickerRange(
         id='date-selected',
         start_date=today - week,
@@ -42,7 +43,7 @@ app.layout = html.Div([
     )]),
 
     # Pas de temps
-    html.Div([html.H2("Choix du pas de temps :"),
+    html.Div([html.H2("Choix du pas de temps :", style={'fontSize': 24}),
               dcc.RadioItems(id='pas-temps',
                              options=[
                                  {'label': '5 min (défault)', 'value': 'def'},
@@ -51,7 +52,7 @@ app.layout = html.Div([
                              ],
                              value='def',
                              style={'display': 'inline-block', 'vertical-align': 'top',
-                                    'margin-left': '0.5vw', }
+                                    'margin-left': '0.5vw', 'fontSize': 18}
                              ),
               ]),
 
@@ -64,11 +65,12 @@ app.layout = html.Div([
               dcc.Graph(id='pres-graph', style={'display': 'inline-block',
                                                 'vertical-align': 'top', 'margin-left': '0.1vw', 'margin-top': '1vw'}),
               html.Br(),
-              html.Br(),
-              html.Div([html.Div(id='output-daily-readings'), html.Div(id='output-daily-errors')], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '10vw', 'margin-top': '4vw'})]),
+              html.Br(), ]),
+    html.Div([html.Div(id='output-daily-readings'), html.Div(id='output-daily-errors'), html.Div([html.Button('Extraire données au format CSV',
+                                                                                                              id='save-as-csv', n_clicks=0, style={'color': 'white', 'backgroundColor': '#4CAF50', 'border': '2px solid #008000', 'padding': '20px 12px', 'fontSize': 18, 'borderRadius': '8px', 'cursor': 'pointer', 'margin-bottom': '10px'})], style={'margin-top': '1vw'})],
+             style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '6vw', 'margin-top': '4vw', 'fontSize': 19}),
 
-    html.Div([html.Button('Extraire données au format CSV',
-                          id='save-as-csv', n_clicks=0)], style={'display': 'inline-block', 'vertical-align': 'top', 'margin-left': '10vw', 'margin-top': '2vw'}),
+
 
 
 ])
@@ -104,8 +106,9 @@ def update_graph_date(montage_id, input_start, input_end, time_period, n_clicks)
             montage__pk=(int(montage_id)), real_time_clock__gte=input_start, real_time_clock__lte=input_end).values()))
         dff = df.copy()
         # pour les graphiques on ne veut pas les aberrantes. Or c'est utile de les conserver pour le comptage du nb de données aberrantes.
+        # TODO: fix bug for an empty data set (if the montage is not inactive... and there are no available data for a given interval)
+        # if not dff.empty:
         dff = dff[dff['donnee_aberrante'] == False]
-
         salle = Salle.objects.get(
             boitier__montage__pk=montage_id)
 

@@ -1,15 +1,40 @@
 {% extends "monitoring/base.html" %}
 
-{% block title %} à propos {% endblock title %}
+{% block title %} À propos {% endblock title %}
 
 {% block content %}
 <h1> À propos </h1>
-<p>Ce site web a été créé dans le cadre d&#39;un projet scolaire d&#39;étudiants en génie biomédical de Polytechnique
+<p align="justify">Ce site web a été créé dans le cadre d&#39;un projet scolaire d&#39;étudiants en génie biomédical de
+    Polytechnique
     Montréal pour le Centre hospitalier de l&#39;Université de Montréal. Celui-ci permet de monitorer, en temps réel,
     les conditions environnementales dans les salles des départements d&#39;oncologie et de médecine nucléaire du CHUM.
     Plus précisément, les variables monitorées sont la température, l&#39;humidité relative ainsi que la pression. De
     plus, les données de météo Canada sont également recueillies pour établir une comparaison avec les conditions
     environnementales extérieures.</p>
-<h2>Qui sommes nous</h2>
-<p> Présentation des 7 étudiants qui ont collaboré sur le projet et les sous-équipes de travail...</p>
+<h2 style="margin-top:0.75cm">Qui sommes nous</h2>
+<p align="justify">L'équipe <b>bamB Weather Watcher</b> est composée de 7 finissants en génie
+    biomédical. Le nom de
+    l'entreprise s'inspire des divers sous-équipes qui ont été formées pour réaliser le projet, ou encore des 4
+    composantes principales du produit livré. En effet, celles-ci sont respectivement le microcontrôleur, la base de
+    données, l&#39;application web, ainsi que le boîtier.</p>
+
+<h4 style="margin-top:0.35cm"> <b>Équipe microcontrôleur</b></h4>
+<ul style="list-style-type:none;">
+    <li>Jessica Aseervatham</li>
+    <li>Rahma Assiani</li>
+    <li>Sandra Chraim</li>
+</ul>
+
+<h4 style="margin-top:0.35cm"> <b>Équipe base de données et boîtier</b> </h4>
+<ul style="list-style-type:none;">
+    <li>Sarah El-Tarazi</li>
+    <li>Madelaine Tjiu-Gildart</li>
+</ul>
+
+<h4 style="margin-top:0.35cm"> <b>Équipe application web</b> </h4>
+<ul style="list-style-type:none;">
+    <li>Émile Jomphe</li>
+    <li>Marielle Vaillancourt</li>
+</ul>
+
 {% endblock content %}
