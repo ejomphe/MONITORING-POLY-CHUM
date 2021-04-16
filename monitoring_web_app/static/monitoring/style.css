@@ -4,7 +4,7 @@ body {
     margin-top: 5rem;
   }
   nav {
-    background-color: royalblue;
+    background-color: #40A9C6;
   }
   .navbar-brand img {
     max-height: 40px;
@@ -20,6 +20,6 @@ body {
     font-size: 20px;
     margin: auto 5px;
   }
- a:hover {
-    color :#030383;
+  a:hover {
+    color :#2F859D;
   }

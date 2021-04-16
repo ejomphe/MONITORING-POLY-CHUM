@@ -22,10 +22,10 @@
 
 <body>
 
-  <nav class="navbar fixed-top navbar-expand-xl">
+  <nav class="navbar fixed-top navbar-expand-xl" style="background-color: #40A9C6;">
     <div class="container-fluid">
       <a class="navbar-brand " href="{%  url 'home' %}">
-        <img src="{% static 'images/Chum2.jpg' %}" class="rounded d-inline-block align-top" alt="Logo" loading="lazy">
+        <img src="{% static 'images/bamb3.png' %}" class="rounded d-inline-block align-top"  width="60" height="60" alt="Logo" loading="lazy">
       </a>
       <!--Pour petits écrans, toggler va permettre de mettre les éléments de la navbar dans un dropdown pourquoi transparent/noir?-->
       <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
@@ -35,7 +35,7 @@
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav flex-row flex-wrap">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{%  url 'home' %}">Acceuil</a>
+            <a class="nav-link" aria-current="page" href="{%  url 'home' %}">Accueil</a>
           </li>
         </ul>
         <ul class="navbar-nav">
@@ -49,6 +49,11 @@
                 <li><a class="dropdown-item" href="{% url 'data-visualization' salle.0.montage %}"> {{salle.1.nom_salle}} - {{salle.0.montage}}</a></li>
               {% endfor %}
             </ul>
+          </li>
+        </ul>
+        <ul class="navbar-nav flex-row flex-wrap">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{%  url 'about' %}">À propos</a>
           </li>
         </ul>
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto me-2">

@@ -24,8 +24,8 @@
         {% for donnee in liste %}
         {% if donnee.1.departement == departement %}
         <div class="col">
-            <div class="card border-primary bg-light mb-4 mt-4 mx-auto" style="max-width: 18rem;">
-                <a class="card-header card-title text-decoration-none border-primary"
+            <div class="card bg-light mb-4 mt-4 mx-auto" style="max-width: 18rem; border-color: #40a9c6">
+                <a class="card-header card-title text-decoration-none" style="border-color: #40a9c6; text-decoration-color: #40a9c6;"
                     href="{% url 'data-visualization' donnee.0.montage %}">
                     <h4>{{donnee.1.nom_salle}} - {{donnee.0.montage}}</h4>
                 </a>
