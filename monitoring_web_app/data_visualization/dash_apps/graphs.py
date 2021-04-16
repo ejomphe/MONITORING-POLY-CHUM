@@ -46,7 +46,7 @@ app.layout = html.Div([
     html.Div([html.H2("Choix du pas de temps :", style={'fontSize': 24}),
               dcc.RadioItems(id='pas-temps',
                              options=[
-                                 {'label': '5 min (défault)', 'value': 'def'},
+                                 {'label': '5 min (défaut)', 'value': 'def'},
                                  {'label': '1h', 'value': 'hour'},
                                  {'label': '24h', 'value': 'day'}
                              ],

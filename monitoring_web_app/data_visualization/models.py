@@ -77,7 +77,7 @@ class Boitier(models.Model):                               # Admin
 # TODO ajouter un champ nom/numero boitier et utiliser ça dans __str__
 
     def __str__(self):
-        return str(self.pk)
+        return self.nom_boitier
 
 # Admin   (note un montage = capteur + micro)
 
@@ -113,7 +113,7 @@ class Montage(models.Model):
 # TODO ajouter un champ nom/numero montage et utiliser ça dans __str__
 
     def __str__(self):
-        return str(self.pk)
+        return self.nom_montage
 
 
 # environnement canada (web crawler)
@@ -123,8 +123,6 @@ class Climat_exterieur(models.Model):
     hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     donnee_aberrante = models.BooleanField(null=True)
-    # retire et va overwrite quand abb
-    timestamp_sys1 = models.DateTimeField(default=timezone.now)
 
 
 class Donnee_capteur(models.Model):
@@ -135,35 +133,6 @@ class Donnee_capteur(models.Model):
     donnee_aberrante = models.BooleanField()
     donnee_de_panne = models.BooleanField()
     donnee_moyennee = models.BooleanField()
-    # retire éventuellement quand RTC fonctionne.
-    timestamp_sys = models.DateTimeField(auto_now_add=True)
-    real_time_clock = models.DateTimeField(null=True)
-
-    def delta_mc_bd(self):
-        return (self.timestamp_sys - self.real_time_clock)
-
-    def delta_bd_app(self):
-        return (timezone.now() - self.timestamp_sys)
-
-# Retirer toute cette table
-
-
-class Donnee_aberrante_capteur(models.Model):
-    montage = models.ForeignKey(Montage, on_delete=models.CASCADE)
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    # retire éventuellement quand RTC fonctionne.
-    timestamp_sys = models.DateTimeField(auto_now_add=True)
-    real_time_clock = models.DateTimeField(null=True)
-
-
-# Retire toute cette table
-class Panne_de_service(models.Model):
-    montage = models.ForeignKey(Montage, on_delete=models.CASCADE)
-    temp_c = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    hum_rh = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    pres_kpa = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     # retire éventuellement quand RTC fonctionne.
     timestamp_sys = models.DateTimeField(auto_now_add=True)
     real_time_clock = models.DateTimeField(null=True)

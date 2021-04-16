@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from data_visualization.models import Donnee_capteur, Salle, Montage, Boitier, Climat_exterieur
-from alert.utils.utils import check_for_alert
 
 
 def listeDepartement(departements):
@@ -17,6 +16,7 @@ def home(request):
     salles = []
     departements = []
     donnees = []
+    noms_montage = []
     for x in MontageActif:
         derniere_donnee = Donnee_capteur.objects.filter(
             montage=x.id, donnee_aberrante=False).last()
@@ -29,13 +29,11 @@ def home(request):
             donnees.append(derniere_donnee)
             salle = Salle.objects.get(boitier__montage__pk=x.id)
             salles.append(salle)
-            # TODO ajouter vérification de la dernière données pour chaque salle pour envoie alerte.
-            #check_for_alert(derniere_donnee, salle)
-
             departements.append(Salle.objects.get(
                 boitier__montage__pk=x.id).departement)
+            noms_montage.append(x.nom_montage)
 
-    liste = list(zip(donnees, salles))
+    liste = list(zip(donnees, salles, noms_montage))
 
     context = {
         'salle_navbar': salles,

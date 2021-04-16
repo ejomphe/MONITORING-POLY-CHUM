@@ -4,9 +4,9 @@ from . import views
 from data_visualization.dash_apps import graphs
 
 urlpatterns = [
-    path('montage/<montage_id>/', views.data_visualization,
+    path('montage/<nom_montage>/', views.data_visualization,
          name='data-visualization'),
-    
-    path('montage/<montage_id>/info', views.info,
+
+    path('montage/<nom_montage>/info', views.info,
          name='info_montage'),
 ]
