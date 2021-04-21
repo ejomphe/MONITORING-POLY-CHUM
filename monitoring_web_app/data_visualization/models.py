@@ -67,7 +67,7 @@ class Boitier(models.Model):                               # Admin
     # On parle ici de la description du l'endroit ou on a placé le boitier ex. coin nord-ouest
     emplacement = models.CharField(max_length=30, blank=True, )
     date_fabrication = models.DateField(
-        blank=True, verbose_name="Date de fabrication")
+        blank=True, null=True, verbose_name="Date de fabrication")
     materiel = models.CharField(
         max_length=20, blank=True, verbose_name="Matériel")
     numero_imprimante_fabrication = models.CharField(
@@ -103,9 +103,9 @@ class Montage(models.Model):
     ord_orig_pres = models.DecimalField(
         max_digits=5, decimal_places=3, verbose_name="Ordonnee à l'origine pression")
     date_derniere_calibration = models.DateField(
-        blank=True, verbose_name="Date de la dernière calibration")
+        blank=True, null=True, verbose_name="Date de la dernière calibration")
     date_prochaine_calibration = models.DateField(
-        blank=True, verbose_name="Date de la prochaine calibration")
+        blank=True, null=True, verbose_name="Date de la prochaine calibration")
     responsable = models.ManyToManyField('alert.Responsable')
     actif = models.BooleanField(
         help_text="Cette option doit être sélectionnée pour afficher les données de ce montage sur le site")
