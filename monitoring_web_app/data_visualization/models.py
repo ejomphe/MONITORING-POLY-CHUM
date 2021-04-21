@@ -74,7 +74,6 @@ class Boitier(models.Model):                               # Admin
         max_length=20, blank=True, verbose_name="Numéro d'imprimante de fabrication")
     nom_fichier_cad = models.CharField(
         max_length=50, blank=True, verbose_name="Nom du fichier CAD")
-# TODO ajouter un champ nom/numero boitier et utiliser ça dans __str__
 
     def __str__(self):
         return self.nom_boitier
@@ -110,8 +109,6 @@ class Montage(models.Model):
     actif = models.BooleanField(
         help_text="Cette option doit être sélectionnée pour afficher les données de ce montage sur le site")
 
-# TODO ajouter un champ nom/numero montage et utiliser ça dans __str__
-
     def __str__(self):
         return self.nom_montage
 
@@ -133,6 +130,4 @@ class Donnee_capteur(models.Model):
     donnee_aberrante = models.BooleanField()
     donnee_de_panne = models.BooleanField()
     donnee_moyennee = models.BooleanField()
-    # retire éventuellement quand RTC fonctionne.
-    timestamp_sys = models.DateTimeField(auto_now_add=True)
     real_time_clock = models.DateTimeField(null=True)
