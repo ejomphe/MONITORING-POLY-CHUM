@@ -23,7 +23,7 @@ Des microcontrôleurs ESP32 muni d'un capteur BME280 font l'acquisition de donn�
 L'application web est en fait composée de 4 sous-application à savoir les applications :
 * Monitoring
 * Visualisaiton de données
-* Alerte
+* Alertes
 * Admin <br><br>
 <img src="images/Structure-app-web.png">
 
